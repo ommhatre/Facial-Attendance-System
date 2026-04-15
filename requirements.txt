@@ -2,3 +2,4 @@ Flask
 opencv-python
 face-recognition
 openpyxl
+deepface

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Productivity Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Per User Emotion & Productivity (Weekly)</h2>
+
+      {% for user, info in user_data.items() %}
+      <div style="margin-bottom: 50px">
+        <h3>{{ user }}</h3>
+
+        <!-- Emotion Pie Chart -->
+        <canvas id="pie-{{ loop.index }}"></canvas>
+
+        <!-- Productivity Over Time Line Chart -->
+        <canvas id="line-{{ loop.index }}"></canvas>
+
+        <script>
+          const emotionLabels{{ loop.index }} = {{ info.emotions.keys()|list|tojson }};
+          const emotionValues{{ loop.index }} = {{ info.emotions.values()|list|tojson }};
+
+          const prodLabels{{ loop.index }} = {{ info.daily_productivity.keys()|list|tojson }};
+          const prodValues{{ loop.index }} = {{ info.daily_productivity.values()|list|tojson }};
+
+          // Pie Chart for Emotion Breakdown
+          new Chart(document.getElementById("pie-{{ loop.index }}"), {
+            type: 'pie',
+            data: {
+              labels: emotionLabels{{ loop.index }},
+              datasets: [{
+                data: emotionValues{{ loop.index }},
+                backgroundColor: [
+                  '#4caf50','#2196f3','#ff9800','#f44336','#9c27b0','#03a9f4','#ffeb3b'
+                ]
+              }]
+            },
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Weekly Emotion Distribution'
+                }
+              }
+            }
+          });
+
+          // Line Chart for Productivity Over Time
+          new Chart(document.getElementById("line-{{ loop.index }}"), {
+            type: 'line',
+            data: {
+              labels: prodLabels{{ loop.index }},
+              datasets: [{
+                label: 'Productivity (%)',
+                data: prodValues{{ loop.index }},
+                borderColor: 'rgba(75, 192, 192, 1)',
+                fill: false,
+                tension: 0.3
+              }]
+            },
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Productivity Trend Over the Week'
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 100
+                }
+              }
+            }
+          });
+        </script>
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>

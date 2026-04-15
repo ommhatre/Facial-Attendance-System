@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Attendance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Display Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 </head>
 <body>
-    <div class="container">
-        <h2>Attendance Records</h2>
-        <table border="1">
-            <tr>
-                <th>Name</th>
-                <th>Time</th>
-            </tr>
-            {% for name, time in data %}
-            <tr>
-                <td>{{ name }}</td>
-                <td>{{ time }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+  <div class="container">
+    <h2>Attendance Records for {{ selected_date }}</h2>
+
+    <form method="POST">
+      <label for="date">Select Date:</label>
+      <select name="date" id="date" onchange="this.form.submit()">
+        {% for date in available_logs %}
+          <option value="{{ date }}" {% if date == selected_date %}selected{% endif %}>{{ date }}</option>
+        {% endfor %}
+      </select>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>SL. No</th>
+          <th>Name</th>
+          <th>Date & Time</th>
+          <th>Dominant Emotion</th>
+          <th>Productivity (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, time, emotion, emotions_dict, productivity in data %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ name }}</td>
+          <td>{{ time }}</td>
+          <td>{{ emotion }}</td>
+          <td>{{ productivity }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>
